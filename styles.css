@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-    width: 80%;
+    width: 70%;
     margin: auto;
     overflow: hidden;
     padding: 20px;
@@ -63,4 +63,38 @@ button:hover {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #e7e7e7;
+    text-align: center;
+}
+
+footer p, footer ul {
+    margin: 0 0 10px;
+}
+
+footer ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;  /* Align text to the left */
+    font-size: 0.5em;  /* Smaller font size */
+    margin: 0 auto;
+    max-width: 800px; /* Align with the container */
+}
+
+footer ul li {
+    margin: 5px 0;
+}
+
+footer a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
