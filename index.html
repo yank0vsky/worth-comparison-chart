@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worth Comparison Chart</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Worth Comparison Chart</h1>
+        <form id="userDataForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="currentWealth">Current Net Worth (USD):</label>
+                <input type="number" id="currentWealth" required>
+            </div>
+            <div class="form-group">
+                <label for="savingsPerYear">Net Savings per Year (USD):</label>
+                <input type="number" id="savingsPerYear" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" min="18" max="80" required>
+            </div>
+            <div class="form-group">
+                <label for="investmentRate">Expected Investment Rate (%):</label>
+                <input type="number" id="investmentRate" min="0" max="100" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="compareTo">Compare to:</label>
+                <select id="compareTo" required></select>
+            </div>
+            <button type="submit">Compare me!</button>
+        </form>
+        <div id="chartContainer" style="display:none;">
+            <canvas id="wealthChart"></canvas>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
