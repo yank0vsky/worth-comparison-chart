@@ -100,11 +100,13 @@ document.getElementById('userDataForm').addEventListener('submit', function(e) {
         compareTo: document.getElementById('compareTo').value,
         fireMonthlySpend: parseFloat(document.getElementById('fireMonthlySpend').value) || 0
     };
+    console.log('User Data:', userData); // Debugging log
     generateChart(userData);
 });
 
 function generateChart(userData) {
     const comparisonData = sourceData.filter(item => item.compare_to === userData.compareTo && item.age >= userData.age);
+    console.log('Comparison Data:', comparisonData); // Debugging log
     const userProjection = calculateUserProjection(userData, comparisonData);
 
     // Ensure we have data points for all ages from user's current age to 80
@@ -120,10 +122,12 @@ function generateChart(userData) {
     // Calculate FIRE target net worth
     const targetYearlySpend = userData.fireMonthlySpend * 12;
     const fireTargetNetWorth = targetYearlySpend / 0.04;
+    console.log('FIRE Target Net Worth:', fireTargetNetWorth); // Debugging log
 
     // Find the age when user reaches FIRE target net worth
     const fireAgeIndex = userValues.findIndex(value => value >= fireTargetNetWorth);
     const fireAge = fireAgeIndex !== -1 ? allAges[fireAgeIndex] : null;
+    console.log('FIRE Age:', fireAge); // Debugging log
 
     const chartContainer = document.getElementById('chartContainer');
     chartContainer.style.display = 'block';
@@ -165,7 +169,7 @@ function generateChart(userData) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Net Worth Comparison'
+                    text: 'Net Wealth Comparison'
                 }
             },
             scales: {
@@ -178,7 +182,7 @@ function generateChart(userData) {
                 y: {
                     title: {
                         display: true,
-                        text: 'Net Worth (USD)'
+                        text: 'Net Wealth (USD)'
                     },
                     ticks: {
                         callback: function(value) {
@@ -190,7 +194,7 @@ function generateChart(userData) {
         }
     });
 
-    console.log('Chart data:', {labels, comparisonValues, userValues, fireAge, fireTargetNetWorth}); // For debugging
+    console.log('Chart data:', {labels, comparisonValues, userValues, fireAge, fireTargetNetWorth}); // Debugging log
 }
 
 function calculateUserProjection(userData, comparisonData) {
