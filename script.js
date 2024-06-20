@@ -113,30 +113,6 @@ function populateDropdown() {
     });
 }
 
-// Add event listener to compareTo dropdown to update conversion rate note
-document.getElementById('compareTo').addEventListener('change', async function() {
-    const compareTo = this.value;
-    const selectedData = sourceData.find(item => item.compare_to === compareTo);
-    if (selectedData && selectedData.currency === 'EUR') {
-        const rates = await fetchExchangeRates();
-        const euroToUsdRate = rates.USD;
-        const note = document.getElementById('conversionRateNote');
-        if (note) {
-            note.textContent = `EUR/USD conversion rate: ${euroToUsdRate}`;
-        } else {
-            const newNote = document.createElement('div');
-            newNote.id = 'conversionRateNote';
-            newNote.textContent = `EUR/USD conversion rate: ${euroToUsdRate}`;
-            document.getElementById('userDataForm').appendChild(newNote);
-        }
-    } else {
-        const note = document.getElementById('conversionRateNote');
-        if (note) {
-            note.textContent = '';
-        }
-    }
-});
-
 // Handle form submission
 document.getElementById('userDataForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -159,14 +135,11 @@ document.getElementById('userDataForm').addEventListener('submit', async functio
 });
 
 function generateChart(userData, convertedSourceData) {
-    console.log('generateChart called');
     const comparisonData = convertedSourceData.filter(item => item.compare_to === userData.compareTo && item.age >= userData.age);
-    console.log('Comparison Data:', comparisonData); // Debugging log
     const userProjection = calculateUserProjection(userData, comparisonData);
 
-    // Ensure we have data points for all ages from user's current age to 80
-    const allAges = Array.from({length: 81 - userData.age}, (_, i) => userData.age + i);
-    
+    const allAges = Array.from({ length: 81 - userData.age }, (_, i) => userData.age + i);
+
     const labels = allAges;
     const comparisonValues = allAges.map(age => {
         const dataPoint = comparisonData.find(item => item.age === age);
@@ -174,15 +147,11 @@ function generateChart(userData, convertedSourceData) {
     });
     const userValues = userProjection.map(item => item.netWealth);
 
-    // Calculate FIRE target net worth
     const targetYearlySpend = userData.fireMonthlySpend * 12;
     const fireTargetNetWorth = targetYearlySpend / 0.04;
-    console.log('FIRE Target Net Worth:', fireTargetNetWorth); // Debugging log
 
-    // Find the age when user reaches FIRE target net worth
     const fireAgeIndex = userValues.findIndex(value => value >= fireTargetNetWorth);
     const fireAge = fireAgeIndex !== -1 ? allAges[fireAgeIndex] : null;
-    console.log('FIRE Age:', fireAge); // Debugging log
 
     const chartContainer = document.getElementById('chartContainer');
     chartContainer.style.display = 'block';
@@ -201,7 +170,7 @@ function generateChart(userData, convertedSourceData) {
                     data: comparisonValues,
                     borderColor: 'blue',
                     fill: false,
-                    spanGaps: true // This will connect the line across null values
+                    spanGaps: true
                 },
                 {
                     label: userData.name,
@@ -215,12 +184,13 @@ function generateChart(userData, convertedSourceData) {
                     borderColor: 'orange',
                     pointBackgroundColor: 'orange',
                     pointRadius: 10,
-                    showLine: false // Only show points
+                    showLine: false
                 }
             ]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,
@@ -248,8 +218,6 @@ function generateChart(userData, convertedSourceData) {
             }
         }
     });
-
-    console.log('Chart data:', {labels, comparisonValues, userValues, fireAge, fireTargetNetWorth}); // Debugging log
 }
 
 function calculateUserProjection(userData, comparisonData) {
