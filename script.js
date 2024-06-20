@@ -97,10 +97,12 @@ document.getElementById('userDataForm').addEventListener('submit', function(e) {
         savingsPerYear: parseFloat(document.getElementById('savingsPerYear').value),
         age: parseInt(document.getElementById('age').value),
         investmentRate: parseFloat(document.getElementById('investmentRate').value) / 100,
-        compareTo: document.getElementById('compareTo').value
+        compareTo: document.getElementById('compareTo').value,
+        fireMonthlySpend: parseFloat(document.getElementById('fireMonthlySpend').value) || 0
     };
     generateChart(userData);
 });
+
 function generateChart(userData) {
     const comparisonData = sourceData.filter(item => item.compare_to === userData.compareTo && item.age >= userData.age);
     const userProjection = calculateUserProjection(userData, comparisonData);
@@ -114,6 +116,14 @@ function generateChart(userData) {
         return dataPoint ? dataPoint.net_wealth : null;
     });
     const userValues = userProjection.map(item => item.netWealth);
+
+    // Calculate FIRE target net worth
+    const targetYearlySpend = userData.fireMonthlySpend * 12;
+    const fireTargetNetWorth = targetYearlySpend / 0.04;
+
+    // Find the age when user reaches FIRE target net worth
+    const fireAgeIndex = userValues.findIndex(value => value >= fireTargetNetWorth);
+    const fireAge = fireAgeIndex !== -1 ? allAges[fireAgeIndex] : null;
 
     const chartContainer = document.getElementById('chartContainer');
     chartContainer.style.display = 'block';
@@ -139,6 +149,14 @@ function generateChart(userData) {
                     data: userValues,
                     borderColor: 'red',
                     fill: false
+                },
+                {
+                    label: 'FIRE Target',
+                    data: userValues.map((value, index) => (allAges[index] === fireAge ? fireTargetNetWorth : null)),
+                    borderColor: 'orange',
+                    pointBackgroundColor: 'orange',
+                    pointRadius: 10,
+                    showLine: false // Only show points
                 }
             ]
         },
@@ -147,7 +165,7 @@ function generateChart(userData) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Net Wealth Comparison'
+                    text: 'Net Worth Comparison'
                 }
             },
             scales: {
@@ -160,7 +178,7 @@ function generateChart(userData) {
                 y: {
                     title: {
                         display: true,
-                        text: 'Net Wealth (USD)'
+                        text: 'Net Worth (USD)'
                     },
                     ticks: {
                         callback: function(value) {
@@ -172,7 +190,7 @@ function generateChart(userData) {
         }
     });
 
-    console.log('Chart data:', {labels, comparisonValues, userValues}); // For debugging
+    console.log('Chart data:', {labels, comparisonValues, userValues, fireAge, fireTargetNetWorth}); // For debugging
 }
 
 function calculateUserProjection(userData, comparisonData) {
