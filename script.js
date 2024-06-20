@@ -1,3 +1,5 @@
+console.log('script.js is loaded');
+
 let sourceData;
 let chart;
 
